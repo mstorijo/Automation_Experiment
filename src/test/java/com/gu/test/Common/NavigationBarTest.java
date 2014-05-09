@@ -39,6 +39,11 @@ public class NavigationBarTest {
     }
 
 
+    @Test
+    public void goToFootballFrontsViaNavBar() throws Exception {
+
+    }
+
     @After
     public void tearDown() throws Exception {
         testRunner.endTest(driver);

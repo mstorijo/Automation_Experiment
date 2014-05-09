@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
 public class HttpMock {
 
     private final WireMockServer wireMockServer;
@@ -25,8 +21,7 @@ public class HttpMock {
                 new WireMockServer(new WireMockConfiguration().port(8080).enableBrowserProxying(true));
     }
 
-    public void start() {
-
+    public void startServer() {
         wireMockServer.start();
         wireMockServer.addMockServiceRequestListener(new RequestListener() {
             @Override
@@ -35,10 +30,23 @@ public class HttpMock {
             }
         });
 
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                stopServer();
+            }
+        });
     }
 
-    public void stop() {
-        wireMockServer.stop();
+    public void stopServer() {
+        if (wireMockServer.isRunning()) {
+            System.out.println("Stopping wiremock");
+            try {
+                wireMockServer.stop();
+            } catch (Exception e) {
+            }
+            System.out.println("Stopped wiremock");
+        }
     }
 
 
